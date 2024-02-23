@@ -1,5 +1,7 @@
 import math
 import random
+import time
+
 import pygame
 pygame.init()
 
@@ -18,9 +20,21 @@ ENUMS = ["HOME", "TEST", "TRIAL_COMPLETE", "TEST_COMPLETE"]
 ENUM = "HOME"
 
 def redrawGameWindow():
-    pygame.draw.rect(win, bg_color, [0,0,sw,sh])
-    pygame.draw.rect(win, fg_color, [200, 0, 100, sh])
-    pygame.draw.rect(win, fg_color, [900, 0, 100, sh])
+    if ENUM == "HOME":
+        font = pygame.font.SysFont('segoeuiblack', 60)
+        welcomeText = font.render("Welcome to the Fitt's Law Experiment", 1, fg_color)
+        win.blit(welcomeText, (sw//2 - (welcomeText.get_width()//2), 50))
+        pygame.draw.rect(win, fg_color, [372, 284, 455, 131])
+        buttonText = font.render("Begin", 1, black_color)
+        win.blit(buttonText, (sw // 2 - (buttonText.get_width() // 2), 307))
+    else:
+        # for i, f in enumerate(pygame.sysfont.get_fonts()):
+        #     fon = pygame.font.SysFont(f, 25)
+        #     welcomeText = fon.render(str(f), 1, fg_color)
+        #     win.blit(welcomeText, (int(random.randint(0,1200)), i*12))
+        pygame.draw.rect(win, bg_color, [0,0,sw,sh])
+        pygame.draw.rect(win, fg_color, [200, 0, 100, sh])
+        pygame.draw.rect(win, fg_color, [900, 0, 100, sh])
     # win.blit(bg, (0, 0))
     # player.draw(win)
     # for b in playerBullets:
@@ -58,12 +72,23 @@ def redrawGameWindow():
 
 count = 0
 run = True
-print(pygame.font.get_fonts())
+trial_count = 0
+print(pygame.sysfont.get_fonts())
+
+
 while run:
     clock.tick(60)
     count += 1
 
+    # if ENUM == "HOME":
+    #     if
+
     for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            if ENUM == "HOME":
+                if 372 <= pos[0] <= 372 + 455 and 284 <= pos[1] <= 284 + 131:
+                    ENUM = ENUM[1]
         if event.type == pygame.QUIT:
             run = False
 
