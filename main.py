@@ -7,14 +7,20 @@ sw = 1200
 sh = 700
 
 clock = pygame.time.Clock()
-gameOver = False
+# gameOver = False
 win = pygame.display.set_mode((sw, sh))
 pygame.display.set_caption("Fitt's Law Test")
 # bg = pygame.image.load("bg2.png")
+bg_color = (1, 0, 29)
+fg_color = (108, 176, 255)
+black_color = (0,0,0)
+ENUMS = ["HOME", "TEST", "TRIAL_COMPLETE", "TEST_COMPLETE"]
+ENUM = "HOME"
 
 def redrawGameWindow():
-    pygame.draw.rect(win, (102,178,178), [200, 0, 100, sh])
-    pygame.draw.rect(win, (102,178,178), [900, 0, 100, sh])
+    pygame.draw.rect(win, bg_color, [0,0,sw,sh])
+    pygame.draw.rect(win, fg_color, [200, 0, 100, sh])
+    pygame.draw.rect(win, fg_color, [900, 0, 100, sh])
     # win.blit(bg, (0, 0))
     # player.draw(win)
     # for b in playerBullets:
@@ -52,6 +58,7 @@ def redrawGameWindow():
 
 count = 0
 run = True
+print(pygame.font.get_fonts())
 while run:
     clock.tick(60)
     count += 1
