@@ -37,6 +37,12 @@ class Trial:
         self.t1 = 0
         self.t2 = 0
 
+    def get_distance(self):
+        return self.x2 - self.x1 + self.bar_width
+
+    def get_average_time(self):
+        return sum(self.times)/len(self.times)
+
     def reset(self):
         self.is_left = True
         self.click_count = 0
@@ -73,6 +79,27 @@ class Trial:
             pygame.draw.rect(win, fg_color, [self.x1, self.y, self.bar_width, self.height])
         else:
             pygame.draw.rect(win, fg_color, [self.x2, self.y, self.bar_width, self.height])
+
+def create_trials():
+    t1 = Trial(100, 1000, 100, 3, 1)
+    t2 = Trial(300, 800, 100, 2, 2)
+    t3 = Trial(270, 920, 10, 6, 3)
+    t4 = Trial(345, 840, 15, 5, 4)
+    t5 = Trial(150, 1000, 50, 4, 5)
+    t6 = Trial(350, 800, 50, 3, 6)
+    t7 = Trial(175, 1000, 25, 5, 7)
+    t8 = Trial(225, 900, 75, 3, 8)
+    t9 = Trial(105, 1080, 15, 6, 9)
+    t10 = Trial(510, 680, 10, 4, 10)
+    t11 = Trial(375, 750, 75, 2, 11)
+    t12 = Trial(435, 760, 10, 6, 12)
+    t13 = Trial(430, 760, 10, 5, 13)
+    t14 = Trial(375, 800, 25, 4, 14)
+    t15 = Trial(150, 900, 150, 2, 15)
+    trials_list = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15]
+    return trials_list
+
+trials = create_trials()
 
 def reset_trials():
     for t in trials:
@@ -121,27 +148,23 @@ count = 0
 run = True
 
 
-def create_trials():
-    t1 = Trial(100, 1000, 100, 3, 1)
-    t2 = Trial(300, 800, 100, 2, 2)
-    t3 = Trial(270, 920, 10, 6, 3)
-    t4 = Trial(345, 840, 15, 5, 4)
-    t5 = Trial(150, 1000, 50, 4, 5)
-    t6 = Trial(350, 800, 50, 3, 6)
-    t7 = Trial(175, 1000, 25, 5, 7)
-    t8 = Trial(225, 900, 75, 3, 8)
-    t9 = Trial(105, 1080, 15, 6, 9)
-    t10 = Trial(510, 680, 10, 4, 10)
-    t11 = Trial(375, 750, 75, 2, 11)
-    t12 = Trial(435, 760, 10, 6, 12)
-    t13 = Trial(430, 760, 10, 5, 13)
-    t14 = Trial(375, 800, 25, 4, 14)
-    t15 = Trial(150, 900, 150, 2, 15)
-    trials_list = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15]
-    return trials_list
 
 
-trials = create_trials()
+def write_output():
+    with open("results.csv", "w") as f:
+        f.write("Trial Number, Bar Width, Distance, ID, Average Time, Time 1, Time 2, Time 3, Time 4, Time 5")
+        f.write("Time 6, Time 7, Time 8, Time 9, Time 10\n")
+        for t in trials:
+            f.write(f"{t.trial_number}, {t.bar_width}, {t.get_distance()}, {t.id}, {t.get_average_time()}")
+            print(f"{t.trial_number}, {t.bar_width}, {t.get_distance()}, {t.id}, {t.get_average_time()}", end='')
+            for time in t.times:
+                f.write(f", {time}")
+                print(f", {time}", end='')
+            f.write("\n")
+            print('')
+
+
+
 is_finished = False
 while run:
     clock.tick(60)
@@ -155,6 +178,7 @@ while run:
 
             if trial_count == 14:
                 ENUM = ENUMS[3]
+                write_output()
                 is_finished = True
             else:
                 ENUM = ENUMS[2]
