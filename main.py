@@ -16,6 +16,7 @@ pygame.display.set_caption("Fitt's Law Test")
 # bg = pygame.image.load("bg2.png")
 bg_color = (1, 0, 29)
 fg_color = (108, 176, 255)
+dark_fg_color = (45, 44, 81)
 black_color = (0, 0, 0)
 ENUMS = ["HOME", "TEST", "TRIAL_COMPLETE", "TEST_COMPLETE"]
 ENUM = "HOME"
@@ -23,14 +24,15 @@ trial_count = 0
 
 
 class Trial:
-    def __init__(self, x1, x2, bar_width, id, trial_number):
-        self.x1 = x1
-        self.x2 = x2
+    def __init__(self, distance, bar_width, id, trial_number):
+        self.distance = distance
         self.bar_width = bar_width
+        self.x1 = sw//2 - (self.distance + 2 * self.bar_width)//2
+        self.x2 = self.x1 + self.bar_width + self.distance
         self.id = id
         self.trial_number = trial_number
-        self.y = 0
-        self.height = sh
+        self.y = sh//2-self.bar_width//2
+        self.height = self.bar_width
         self.is_left = True
         self.click_count = 0
         self.times = []
@@ -38,7 +40,7 @@ class Trial:
         self.t2 = 0
 
     def get_distance(self):
-        return self.x2 - self.x1 + self.bar_width
+        return self.distance
 
     def get_average_time(self):
         return sum(self.times)/len(self.times)
@@ -51,7 +53,7 @@ class Trial:
         self.t2 = 0
     def clicked(self, x, y):
         if self.is_left:
-            if self.x1 <= x <= self.x1 + self.bar_width and 0 < y < self.height:
+            if self.x1 <= x <= self.x1 + self.bar_width and self.y <= y < self.y+self.height:
                 if self.click_count == 0:
                     self.t2 = time.time()
                 else:
@@ -63,7 +65,7 @@ class Trial:
                 self.is_left = not self.is_left
                 self.click_count += 1
         else:
-            if self.x2 <= x <= self.x2 + self.bar_width and 0 < y < self.height:
+            if self.x2 <= x <= self.x2 + self.bar_width and self.y <= y < self.y+self.height:
                 self.t1 = self.t2
                 self.t2 = time.time()
                 self.times.append(self.t2 - self.t1)
@@ -77,25 +79,32 @@ class Trial:
     def draw(self, win):
         if self.is_left:
             pygame.draw.rect(win, fg_color, [self.x1, self.y, self.bar_width, self.height])
+            pygame.draw.rect(win, dark_fg_color, [self.x2, self.y, self.bar_width, self.height])
         else:
             pygame.draw.rect(win, fg_color, [self.x2, self.y, self.bar_width, self.height])
+            pygame.draw.rect(win, dark_fg_color, [self.x1, self.y, self.bar_width, self.height])
+
 
 def create_trials():
-    t1 = Trial(100, 1000, 100, 3, 1)
-    t2 = Trial(300, 800, 100, 2, 2)
-    t3 = Trial(270, 920, 10, 6, 3)
-    t4 = Trial(345, 840, 15, 5, 4)
-    t5 = Trial(150, 1000, 50, 4, 5)
-    t6 = Trial(350, 800, 50, 3, 6)
-    t7 = Trial(175, 1000, 25, 5, 7)
-    t8 = Trial(225, 900, 75, 3, 8)
-    t9 = Trial(105, 1080, 15, 6, 9)
-    t10 = Trial(510, 680, 10, 4, 10)
-    t11 = Trial(375, 750, 75, 2, 11)
-    t12 = Trial(435, 760, 10, 6, 12)
-    t13 = Trial(430, 760, 10, 5, 13)
-    t14 = Trial(375, 800, 25, 4, 14)
-    t15 = Trial(150, 900, 150, 2, 15)
+    t1 = Trial(300, 100, 2, 1)
+    t2 = Trial(600, 200, 2, 2)
+    t3 = Trial(450, 150, 2, 3)
+
+    t4 = Trial(700, 100, 3, 4)
+    t5 = Trial(525, 75, 3, 5)
+    t6 = Trial(350, 50, 3, 6)
+
+    t7 = Trial(750, 50, 4, 7)
+    t8 = Trial(375, 25, 4, 8)
+    t9 = Trial(225, 15, 4, 9)
+
+    t10 = Trial(775, 25, 5, 10)
+    t11 = Trial(465, 15, 5, 11)
+    t12 = Trial(310, 10, 5, 12)
+
+    t13 = Trial(945, 15, 6, 13)
+    t14 = Trial(630, 10, 6, 14)
+    t15 = Trial(315, 5, 6, 15)
     trials_list = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15]
     return trials_list
 
@@ -152,7 +161,7 @@ run = True
 
 def write_output():
     with open("results.csv", "w") as f:
-        f.write("Trial Number, Bar Width, Distance, ID, Average Time, Time 1, Time 2, Time 3, Time 4, Time 5")
+        f.write("Trial Number, Bar Width, Distance, ID, Average Time, Time 1, Time 2, Time 3, Time 4, Time 5,")
         f.write("Time 6, Time 7, Time 8, Time 9, Time 10\n")
         for t in trials:
             f.write(f"{t.trial_number}, {t.bar_width}, {t.get_distance()}, {t.id}, {t.get_average_time()}")
