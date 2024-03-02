@@ -77,6 +77,10 @@ class Trial:
         return self.click_count
 
     def draw(self, win):
+        if self.click_count == 0:
+            font = pygame.font.SysFont('segoeuiblack', 60)
+            welcomeText = font.render("Click the Left Square to Begin", 1, fg_color)
+            win.blit(welcomeText, (sw // 2 - (welcomeText.get_width() // 2), 50))
         if self.is_left:
             pygame.draw.rect(win, fg_color, [self.x1, self.y, self.bar_width, self.height])
             pygame.draw.rect(win, dark_fg_color, [self.x2, self.y, self.bar_width, self.height])
@@ -161,7 +165,7 @@ run = True
 
 def write_output():
     with open("results.csv", "w") as f:
-        f.write("Trial Number, Bar Width, Distance, ID, Average Time, Time 1, Time 2, Time 3, Time 4, Time 5,")
+        f.write("Trial Number, Square Width, Distance, ID, Average Time, Time 1, Time 2, Time 3, Time 4, Time 5,")
         f.write("Time 6, Time 7, Time 8, Time 9, Time 10\n")
         for t in trials:
             f.write(f"{t.trial_number}, {t.bar_width}, {t.get_distance()}, {t.id}, {t.get_average_time()}")
